@@ -1,0 +1,33 @@
+<div>
+  <br/>  <br/>
+  <label>Name:
+    <input #heroName />  </label>
+   <label>Skill:
+    <input #skillName />
+  </label>
+  <!-- (click) passes input value to add() and then clears the input -->
+  <button (click)="add(heroName.value, skillName.value); heroName.value='';skillName.value=''">
+    add
+  </button>
+</div>
+    <br/>
+  <h4>Skill Search</h4>
+<input #searchBox id="search-box" (keyup)="searchSkill(searchBox.value)" />
+<ul class="heroes">
+  <li *ngFor="let hero of heroes">
+    <a routerLink="/detail/{{hero.id}}">
+      <span class="badge">dt{{hero.id}}</span> {{hero.name}} -  {{hero.skill}} -  {{hero.points}}
+    </a>
+    <button class="delete" title="add point"
+    (click)="addPoint(hero)">+1</button>
+     <button class="delete" title="delete point"
+    (click)="deletePoint(hero)">-1</button>
+  </li>
+</ul>
+
+
+<!-- 
+Copyright 2017-2018 Google Inc. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at http://angular.io/license
+-->
