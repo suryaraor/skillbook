@@ -1,0 +1,1348 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Participant Self-Service",
+        "description": "<div style=\"font-size:16px;\"><p><strong>Getting started with the Participant Self-Service product:</strong></p><p style=\"margin-left: 30px;\">This set of services can be implemented to provide access to retirement plan accounts for plan participants. It includes services that enable the ability to inquire and transact on the retirement accounts (such as making purchases and selling of shares).</p><p style=\"margin-left: 30px;\">Many of the APIs in the product require specific settings to be established. Work with your Client Services Team to ensure the settings are correct for your specific use.</p><p style=\"margin-left: 30px;margin-top: 20px;\"><strong>Host: </strong><i>uat-apis.ssctech.com</i></p><p style=\"margin-left: 30px;margin-bottom: 30px;\"><strong>Basepath: </strong><i>/participant-self-service/v1</i></p></div>",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://uat-apis.ssctech.cloud/participant-self-service/v1"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": [],
+      "OAuth2": []
+    }
+  ],
+  "tags": [],
+  "paths": {
+    "/employees/profiles/contactInformation": {
+      "get": {
+        "summary": "Retrieve the Employee contact information.",
+        "description": "<b>Function:</b><br>\n                  Retrieve participant address (Primary and Secondary), phone\n                  number, Mobile number and Email address.",
+        "operationId": "Retrieve the Employee contact information",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept"
+          },
+          {
+            "$ref": "#/components/parameters/apikey"
+          },
+          {
+            "$ref": "#/components/parameters/Content-Type"
+          },
+          {
+            "name": "employeeTaxID",
+            "in": "header",
+            "description": "The tax ID number for the participant.<br><br> Max Length: 9<br> <br> Note: <ul> <li> employeeTaxID, participantID, and planID are NOT required. But, either employeeTaxID - OR - participantID and planID are required. </li> </ul>",
+            "schema": {
+              "type": "string",
+              "default": "{{employeeTaxID}}",
+              "x-overrideDefaultDesc": true
+            },
+            "x-overrideDefaultDesc": true
+          },
+          {
+            "name": "icuID",
+            "in": "header",
+            "description": "Unique ID for the Investment Company Unit (ICU).<br><br> Max Length: 5<br><br> Format: #####",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "nameID",
+            "in": "header",
+            "description": "Specify the authorizationContext to be used for security; <br><ul><li>when userType = OPID, the sponsors operator id must be supplied</li><li>when userType = PSSN, the participants SSN must be supplied</li><li>when userType = PPID, the participant user id must be supplied</li><li>when userType = PTID, the third party administrator(TPA) id must be supplied</li><li>when userType = PRID, the retirement consultant(RC) id must be supplied</li><li>when userType = ADID, the advisor id must be supplied</li><li>when userType = OWID, the customer service representative ID must be supplied</li> </ul>",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "{{nameID}}"
+            }
+          },
+          {
+            "name": "participantID",
+            "in": "header",
+            "description": "Unique ID for a participant registration.  <br> <br> Max Length: 9<br> <br> Format: #########<br> <br> Notes: <ul> <li> Only one participant registration can be assigned a status of Active.</li> <li> A participant registration is initially established when an employee makes/earns an investment in a Plan. </li> <li> Ownership/allocation can be transferred to a Beneficiary or Qualified Domestic Relations Order (QDRO) in the event of death or divorce as an example.</li> <li> employeeTaxID, participantID, and planID are NOT required. But, either employeeTaxID - OR - participantID and planID are required. </li> </ul>",
+            "schema": {
+              "type": "string",
+              "default": "{{participantID}}"
+            }
+          },
+          {
+            "name": "planID",
+            "in": "header",
+            "description": "Unique ID for the Plan.<br><br> Max Length: 7<br><br> Format: #######<br> <br> Note: <ul> <li> employeeTaxID, participantID, and planID are NOT required. But, either employeeTaxID - OR - participantID and planID are required. </li> </ul>",
+            "schema": {
+              "type": "string",
+              "format": "int32",
+              "default": "{{planID}}",
+              "x-overrideDefaultDesc": true
+            },
+            "x-overrideDefaultDesc": true
+          },
+          {
+            "name": "userType",
+            "in": "header",
+            "description": "Specify the securityChannel; valid options are OPID, PSSN, PPID, PTID, PRID, ADID and OWID.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "{{userType}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeProfileContactInformationResponseDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Client Errors<br/><ul><li>icuID - ES00043: An ICU ID is required. Enter an ICU ID that is maximum 5 digits.</li><li>icuID - ES00044: The ICU ID is invalid. Enter an ICU ID that is maximum 5 digits.</li><li>employeeTaxID - ES00047: Employee Tax ID must be a 9 digits numeric with leading zeros.</li><li>planID - CMN00007: Internal Plan ID has to be numeric and can not be more than 7 digits.</li><li>participantID - CMN00012: Participant ID has to be numeric and can not be more than 9 digits.</li><li>employeeTaxID - ES00080: The participantID and planID both are required when employeeTaxID is empty.</li><li>employeeTaxID - ES00081: Employee Tax ID must be a 9 digit number greater than 0 with leading zeros.</li></ul>",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBean"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "407": {
+            "$ref": "#/components/responses/407"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": [],
+            "OAuth2": []
+          }
+        ]
+      },
+    },
+    "/participants/{participantID}/profiles": {
+      "get": {
+        "summary": "Retrieves Participant Information.",
+        "description": "<b>Function:</b><br>\n                  Retrieve basic information about a participant's registration within a plan.",
+        "operationId": "Retrieve participant's registration details within a plan",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept"
+          },
+          {
+            "$ref": "#/components/parameters/apikey"
+          },
+          {
+            "$ref": "#/components/parameters/Content-Type"
+          },
+          {
+            "name": "icuID",
+            "in": "header",
+            "description": "Unique ID for the Investment Company Unit (ICU).<br><br> Max Length: 5<br><br> Format: #####",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "nameID",
+            "in": "header",
+            "description": "Specify the authorizationContext to be used for security; <br><ul><li>when userType = OPID, the sponsors operator id must be supplied</li><li>when userType = PSSN, the participants SSN must be supplied</li><li>when userType = PPID, the participant user id must be supplied</li><li>when userType = PIID, the participant's internal ID must be supplied in the format icuID-planID-participantID- </li><li>when userType = PTID, the third party administrator(TPA) id must be supplied</li><li>when userType = PRID, the retirement consultant(RC) id must be supplied</li><li>when userType = ADID, the advisor id must be supplied</li><li>when userType = OWID, the customer service representative ID must be supplied</li> </ul>",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "{{nameID}}"
+            }
+          },
+          {
+            "name": "participantID",
+            "in": "path",
+            "description": "Unique ID for a participant registration.  <br> <br> Max Length: 9<br> <br> Format: #########<br> <br> Notes: <ul> <li> Only one participant registration can be assigned a status of Active.</li> <li> A participant registration is initially established when an employee makes/earns an investment in a Plan. </li> <li> Ownership/allocation can be transferred to a Beneficiary or Qualified Domestic Relations Order (QDRO) in the event of death or divorce as an example.</li> </ul>",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "planID",
+            "in": "header",
+            "description": "Unique ID for the Plan.<br> <br> Max Length: 7<br> <br> Format: #######",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": "{{planID}}"
+            }
+          },
+          {
+            "name": "userType",
+            "in": "header",
+            "description": "Specify the securityChannel; valid options are OPID, PSSN, PPID, PIID, PTID, PRID, ADID and OWID.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "{{userType}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartProfileResponseDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Client Errors<br/><ul><li>icuID - CMN0004: Internal ICU ID has to be numeric and can not be more than 5 digits.</li><li>icuID - CMN0005: Internal ICU ID must be greater than 0.</li><li>icuID - CMN0006: Internal ICU ID is required. Enter an ICU ID that is maximum of 5 digits.</li><li>planID - CMN0007: Internal Plan ID has to be numeric and can not be more than 7 digits.</li><li>planID - CMN0008: Internal Plan ID must be greater than 0.</li><li>planID - CMN0009: Internal Plan ID is required. Enter a Plan ID that is maximum of 7 digits.</li><li>participantID - CMN0012: Participant ID has to be numeric and can not be more than 9 digits.</li><li>participantID - CMN0013: Participant ID must be greater than 0.</li><li>participantID - CMN0014: Participant ID is required. Enter a Participant ID that is maximum of 9 digits.</li><li>dnis - PT00015: DNIS is required.</li></ul>",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBean"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "407": {
+            "$ref": "#/components/responses/407"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": [],
+            "OAuth2": []
+          }
+        ]
+      }
+    },
+    "/plans/{planID}/features/contacts": {
+      "get": {
+        "summary": "Retrieve contacts information for the plan.",
+        "description": "<b>Function:</b><br>\n                  Retrieve contacts information for the plan.",
+        "operationId": "Gets the plan contacts information",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept"
+          },
+          {
+            "$ref": "#/components/parameters/apikey"
+          },
+          {
+            "name": "contactTypeCode",
+            "in": "query",
+            "description": "Identifies the contact type.<br><br>Valid Values:<ul><li>Sponsor Company</li><li>Plan Administrator</li><li>Account Administrator</li><li>Primary Representative</li><li>Add Representative</li><li>Custodian</li><li>Trustee</li><li>Third Party Administrator</li><li>Payer Tax Reporting</li><li>Affiliate Company</li><li>Location</li><li>Additional Service</li><li>Representative Group</li></ul>",
+            "schema": {
+              "type": "string",
+              "default": "abcd"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Content-Type"
+          },
+          {
+            "name": "financialIntermediaryServiceID",
+            "in": "query",
+            "description": "<br><br>Valid Values:<li>Accounting</li><li>Affiliated Dealer</li><li>Actuarial</li><li>Appraisal</li><li>Broker</li><li>Bank Trust</li><li>Contract Administrating/Management</li><li>Consultant</li><li>Defined Benefit</li><li>Dealer</li><li>Dealer Manager</li><li>Document Processing</li><li>Earnings Distribution Disbursement</li><li>Financial Advice</li><li>Financier</li><li>Auto Force Out Rollover Service</li><li>Investment Advisory</li><li>Investment Management</li><li>Investment Management Marketing</li><li>Insurance</li><li>Legal</li><li>Investment Lineup Fiduciary Service</li><li>Marketing</li><li>Plan Administrator</li><li>Plan Advisory Service</li><li>Retirement Consultant</li><li>Representative</li><li>Recordkeeper</li><li>Rollover Service</li><li>Self Directed Brokerage Account Svc</li><li>5500 Other Service</li><li>Third Party Administrator</li><li>Trust</li><li>Voluntary Rollover Service</li></ul>",
+            "schema": {
+              "type": "string",
+              "default": "abcd"
+            }
+          },
+          {
+            "name": "icuID",
+            "in": "header",
+            "description": "Unique ID for the Investment Company Unit (ICU).<br><br> Max Length: 5<br><br> Format: #####",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "nameID",
+            "in": "header",
+            "description": "Specify the authorizationContext to be used for security; <br><ul><li>when userType = OPID, the sponsors operator id must be supplied</li><li>when userType = PSSN, the participants SSN must be supplied</li><li>when userType = PPID, the participant user id must be supplied</li><li>when userType = PTID, the third party administrator(TPA) id must be supplied</li><li>when userType = PRID, the retirement consultant(RC) id must be supplied</li><li>when userType = ADID, the advisor id must be supplied</li><li>when userType = OWID, the customer service representative ID must be supplied</li> </ul>",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "{{nameID}}"
+            }
+          },
+          {
+            "name": "planID",
+            "in": "path",
+            "description": "Unique ID for the Plan.<br> <br> Max Length: 7<br> <br> Format: #######",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int32",
+              "default": "{{planID}}"
+            }
+          },
+          {
+            "name": "userType",
+            "in": "header",
+            "description": "Specify the securityChannel; valid options are OPID, PSSN, PPID, PTID, PRID, ADID and OWID.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "{{userType}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetrieveContactInformationListResponseDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Client Errors<br/><ul><li>planID - PL00015: A Plan ID is required. Enter a Plan ID that is maximum 7 digits.</li><li>planID - PL00016: The Plan ID is invalid. Enter a Plan ID that is maximum 7 digits.</li><li>icuID - PL00017: An ICU ID is required. Enter a ICU ID that is maximum 5 digits.</li><li>icuID - PL00018: The ICU ID is invalid. Enter a ICU ID that is maximum 5 digits.</li><li>icuID - PL00113: The Contact Type Code must be 'Account Administrator', 'Add Representative', 'Additional Service', 'Affiliate Company', 'Custodian', 'Location', 'Payer Tax Reporting', 'Payroll Service', 'Plan Administrator', 'Primary Representative', 'Representative Group', 'Sponsor Company', 'Third Party Administrator' or 'Trustee'.</li><li>icuID - PL00114: The Financial Intermediary Service ID must be 'Accounting',  'Actuarial', 'Affiliated Dealer', 'Appraisal', 'Auto Force Out Rollover Service', 'Bank Trust', 'Broker', 'Consultant', 'Contract Administrating/Management', 'Dealer Manager', 'Dealer', 'Defined Benefit', 'Document Processing', 'Earnings Distribution Disbursement', 'Financial Advice', 'Financier', 'Insurance', 'Investment Advisory', 'Investment Lineup Fiduciary Service', 'Investment Management Marketing', 'Investment Management', 'Legal', 'Marketing', 'Plan Administrator', 'Plan Advisory Service', 'Recordkeeper', 'Representative', 'Retirement Consultant', 'Rollover Service', 'Self Directed Brokerage Account Svc', 'Third Party Administrator', 'Trust', 'Voluntary Rollover Service' or '5500 Other Service'.</li><li>icuID - PL00115: The Financial Intermediary Service ID is required when the Contact Type Code is 'Additional Service'. </li><li>icuID - PL00116: The Financial Intermediary Service ID must be blank when the Contact Type Code is not 'Additional Service'.</li></ul>",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBean"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "407": {
+            "$ref": "#/components/responses/407"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": [],
+            "OAuth2": []
+          }
+        ]
+      }
+    },
+  },
+  "components": {
+    "parameters": {
+	  "Accept": {
+		"name": "Accept",
+		"in": "header",
+		"description": "Specify as <code>application/json</code>.",
+		"required": true,
+		"schema": {
+		  "type": "string",
+		  "default": "application/json"
+		}
+	  },
+	  "apikey": {
+		"name": "apikey",
+		"in": "header",
+		"description": "Client provided secret token required for API calls.",
+		"required": true,
+		"schema": {
+		  "type": "string",
+		  "default": "{{apikey}}"
+		}
+	  },
+	  "Content-Type": {
+		"name": "Content-Type",
+		"in": "header",
+		"description": "Specify as <code>application/json</code>.",
+		"required": true,
+		"schema": {
+		  "type": "string",
+		  "default": "application/json"
+		}
+	  }
+	},
+    "responses": {
+      "401": {
+        "description": "Unauthorized<br/><ul><li>Missing or invalid access token</li></ul>",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error_description": {
+                  "type": "string",
+                  "example": "The access token is invalid or has expired"
+                },
+                "error": {
+                  "type": "string",
+                  "example": "invalid_token"
+                }
+              }
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "Forbidden<br/><ul><li>Invalid userType for this resource</li></ul>",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errorMessage": {
+                  "type": "string",
+                  "example": "Access is denied"
+                },
+                "errorCode": {
+                  "type": "string",
+                  "example": "403"
+                },
+                "errorSeverity": {
+                  "type": "string",
+                  "example": "ERROR"
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Not Found",
+        "content": {
+          "text/html": {
+            "schema": {
+              "type": "string",
+              "example": {
+                "html": {
+                  "value": "<html><head><title>Error</title></head><body>404 - Not Found</body></html>"
+                }
+              }
+            }
+          }
+        }
+      },
+      "407": {
+        "description": "Invalid API Key"
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errorMessage": {
+                  "type": "string",
+                  "example": "Internal server error message"
+                },
+                "errorCode": {
+                  "type": "string",
+                  "example": "500"
+                },
+                "errorSeverity": {
+                  "type": "string",
+                  "example": "ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "AccountActivityDetails": {
+        "type": "object",
+        "properties": {
+          "allocatedShareCount": {
+            "type": "number",
+            "description": "Participant allocated transaction share count. <br> <br> Max Length: 11 digits and up to 4 decimal places <br> <br> Format: #####.##########",
+            "format": "double"
+          },
+          "allocatedTransactionAmount": {
+            "type": "number",
+            "description": "Total dollar amount of the total number of allocated transactions.<br> <br> Max Length: 13 digits and up to 2 decimal places <br> <br> Format: #############.##",
+            "format": "double"
+          },
+          "assetClassDescriptionText": {
+            "type": "string",
+            "description": "Asset Class Description Text. <br> <br> Max length: 35"
+          },
+          "moneyTypeCode": {
+            "type": "string",
+            "description": "Uniquely identifies the money type. <br> <br> Max Length: 3 <br> <br> Format: ###"
+          },
+          "moneyTypeContributorTypeCode": {
+            "type": "string",
+            "description": "Indicates contribution source is Employee or Employer. <br> <br> Max length: 1 <br> <br> Valid values: <ul> <li>R - Employer - EMPLOYER contribution source for MONEYTYPE.</li> <li>E - Employee - EMPLOYEE contribution source for MONEYTYPE.</li> </ul>"
+          },
+          "moneyTypeName": {
+            "type": "string",
+            "description": "Money Type long name. <br> <br> Max Length: 40"
+          },
+          "newReallocationRate": {
+            "type": "number",
+            "description": "New participant reallocation rate as a result of this transaction. <br> <br> Max Length: 5 digits and up to 10 decimal places <br> <br> Format: #####.##########",
+            "format": "double"
+          },
+          "oldReallocationRate": {
+            "type": "number",
+            "description": "Participant reallocation rate prior to this transaction. <br> <br> Max Length: 5 digits and up to 10 decimal places <br> <br> Format: #####.##########",
+            "format": "double"
+          },
+          "transactionID1": {
+            "type": "integer",
+            "description": "A series of numbers which uniquely identifies a transaction. <br> <br> Max Length: 11<br> <br> Format : ###########",
+            "format": "int64"
+          },
+          "transactionID2": {
+            "type": "integer",
+            "description": "A series of numbers which uniquely identifies a transaction. <br> <br> Max Length: 11<br> <br> Format: ###########",
+            "format": "int64"
+          },
+          "unitPrice": {
+            "type": "number",
+            "description": "Participant allocated transaction unit price. <br> <br> Max Length: 5 digits and up to 10 decimal places <br> <br> Format: #####.##########",
+            "format": "double"
+          },
+          "vehicleID": {
+            "type": "integer",
+            "description": "Unique investment vehicle ID offered by an investment vehicle provider. <br> <br> Max Length: 7 <br> <br> Format: ####### <br> <br> Notes: This is a non-intelligent number generated by the system.",
+            "format": "int32"
+          },
+          "vehicleLongName": {
+            "type": "string",
+            "description": "Provider Investment Vehicle long name. <br> <br> Max Length: 40"
+          },
+          "vehicleTypeCode": {
+            "type": "string",
+            "description": "Identifies an Investment Vehicle Type offered by Provider. <br> <br> Max Length: 5 <br> <br> Valid Values: <ul> <li>INTMF - Internal Mutual Fund</li> <li>INSUR - Insurance</li> <li>GIC - Guaranteed Income Contract</li> <li>BGIC - Blended Guaranteed Income Contract</li> <li>COSTK -Company Stock</li> <li>CASH - Cash</li> <li>EXTMF - External Mutual Fund</li> <li>BROKR - Brokerage Accounts</li> <li>OGIC - Outside Guaranteed Investment Contract</li> <li>BONDS - Bonds</li> <li>COLTR - Collective Trust Funds</li> <li>LPART - Limited Partnerships</li> <li>SEPAC - Separate Accounts</li> <li>CERTD - Certificates of Deposit</li> <li>ANN - Annuities</li> <li>OTHER - OTHER</li> </ul>"
+          },
+          "vestedPercentage": {
+            "type": "number",
+            "description": "The vested percentage. <br> <br> Max Length: 5 digits and up to 10 decimal places <br> <br> Format: #####.##########",
+            "format": "double"
+          }
+        }
+      },
+      "AccountInfo": {
+        "type": "object",
+        "properties": {
+          "accountNumber": {
+            "type": "integer",
+            "description": "A number that identifies an investor's position within a fund.<br> <br> Max Length: 11 digits",
+            "format": "int64"
+          },
+          "accountRegistrationName1": {
+            "type": "string",
+            "description": "First line of the name and address in the mutual fund legal ownership registration associated with the mutual fund account.<br><br> Max Length: 35"
+          },
+          "fundCode": {
+            "type": "integer",
+            "description": "Unique ID for the mutual fund.<br> <br> Max Length: 11 digits",
+            "format": "int64"
+          }
+        }
+      },
+      "EmployeeProfileContactInformationResponseDTO": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Participant email address.<br><br> Max Length: 255 characters"
+          },
+          "mobile": {
+            "type": "string",
+            "description": "Mobile phone number.<br><br> Max Length: 20"
+          },
+          "partPrimaryForeignZipCode": {
+            "type": "string",
+            "description": "ZIP Code for foreign participant's primary address.<br><br> Max Length: 11<br><br> Format: ###########"
+          },
+          "partSecondaryForeignZipCode": {
+            "type": "string",
+            "description": "ZIP Code for foreign participant's secondary address.<br><br> Max Length: 11<br><br> Format: ###########"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number.<br><br> Max Length: 15"
+          },
+          "phoneType": {
+            "type": "string",
+            "description": "The phone number type for the participant.<br><br> Max Length: 1<br><br> Valid Values: <ul> <li>D - Domestic</li> <li>F - Foreign</li> </ul>"
+          },
+          "primaryAddress1": {
+            "type": "string",
+            "description": "First line of the participant's primary address.<br><br> Max Length: 35"
+          },
+          "primaryAddress2": {
+            "type": "string",
+            "description": "Second line of the participant's primary address.<br><br> Max Length: 35"
+          },
+          "primaryAddress3": {
+            "type": "string",
+            "description": "Third line of the participant's primary address.<br><br> Max Length: 35"
+          },
+          "primaryCity": {
+            "type": "string",
+            "description": "City name for the participant's primary address.<br><br> Max Length: 35"
+          },
+          "primaryStateText": {
+            "type": "string",
+            "description": "State for the participant's primary address.<br><br> Max Length: 16"
+          },
+          "primaryZipCode": {
+            "type": "string",
+            "description": "ZIP Code for the participant's primary address.<br><br> Max Length: 5<br><br> Format: #####"
+          },
+          "primaryZipCodeSFX": {
+            "type": "string",
+            "description": "ZIP Code delivery sequence for the participant's primary address.<br><br> Max Length: 4 <br><br> Format: ####"
+          },
+          "secondaryAddress1": {
+            "type": "string",
+            "description": "First line of the participant's secondary address.<br><br> Max Length: 35"
+          },
+          "secondaryAddress2": {
+            "type": "string",
+            "description": "Second line of the participant's secondary address.<br><br> Max Length: 35"
+          },
+          "secondaryAddress3": {
+            "type": "string",
+            "description": "Third line of the participant's secondary address.<br><br> Max Length: 35"
+          },
+          "secondaryCity": {
+            "type": "string",
+            "description": "City name for the participant's secondary address.<br><br> Max Length: 35"
+          },
+          "secondaryStateText": {
+            "type": "string",
+            "description": "State for the participant's secondary address.<br><br> Max Length: 16"
+          },
+          "secondaryZipCode": {
+            "type": "string",
+            "description": "ZIP Code for the participant's secondary address.<br><br> Max Length: 5 <br><br> Format: #####"
+          },
+          "secondaryZipCodeSFX": {
+            "type": "string",
+            "description": "ZIP Code delivery sequence for the participant's secondary address.<br><br> Max Length: 4<br><br> Format: ####"
+          }
+        }
+      },
+	  "ErrorBean": {
+        "type": "object",
+        "properties": {
+          "ERROR": {
+            "type": "string",
+            "description": ""
+          },
+          "INFO": {
+            "type": "string",
+            "description": ""
+          },
+          "WARNING": {
+            "type": "string",
+            "description": ""
+          },
+          "errorCode": {
+            "type": "string",
+            "description": ""
+          },
+          "errorMessage": {
+            "type": "string",
+            "description": ""
+          },
+          "errorSeverity": {
+            "type": "string",
+            "description": ""
+          },
+          "field": {
+            "type": "string",
+            "description": ""
+          },
+          "objectName": {
+            "type": "string",
+            "description": ""
+          },
+          "rejectedValue": {
+            "type": "string",
+            "description": ""
+          }
+        }
+      },
+      "ParticipantAccountActivitySummaryResponseDTO": {
+        "type": "object",
+        "properties": {
+          "beginningBalance": {
+            "type": "number",
+            "description": "Beginning balance amount for the requested timeframe.<br> <br> Max Length: 15 digits with 2 decimal places<br> <br> Format: ###############.##",
+            "format": "double"
+          },
+          "contributionsBalance": {
+            "type": "number",
+            "description": "The total contribution amount for the requested timeframe.<br> <br> Max Length: 15 digits with 2 decimal places<br> <br> Format: ###############.##",
+            "format": "double"
+          },
+          "distributionsAndLoansBalance": {
+            "type": "number",
+            "description": "The total distribution and loan amounts for the requested timeframe.<br> <br> Max Length: 15 digits with 2 decimal places<br> <br> Format: ###############.##",
+            "format": "double"
+          },
+          "employeeBalance": {
+            "type": "number",
+            "description": "The total employee contribution amount for the requested timeframe.<br> <br> Max Length: 15 digits with 2 decimal places<br> <br> Format: ###############.##",
+            "format": "double"
+          },
+          "employerBalance": {
+            "type": "number",
+            "description": "The total employer contribution amount for the requested timeframe.<br> <br> Max Length: 15 digits with 2 decimal places<br> <br> Format: ###############.##<br>",
+            "format": "double"
+          },
+          "endTradeDate": {
+            "type": "string",
+            "description": "The ending search trade date of a requested date range.<br> <br> Format: MM/DD/YYYY"
+          },
+          "endingBalance": {
+            "type": "number",
+            "description": "Ending balance amount for the requested timeframe.<br> <br> Max Length: 15 digits with 2 decimal places<br> <br> Format: ###############.##",
+            "format": "double"
+          },
+          "feesAndExpensesBalance": {
+            "type": "number",
+            "description": "The total fee and expense amounts for the requested timeframe.<br> <br> Max Length: 15 digits with 2 decimal places<br> <br> Format: ###############.##",
+            "format": "double"
+          },
+          "gainLossBalance": {
+            "type": "number",
+            "description": "The total gain and loss amounts for the requested timeframe.<br> <br> Max Length: 15 digits with 2 decimal places<br> <br> Format: ###############.##<br> <br> Notes: This will be calculated as, <br> <b>gainLossBalance</b> = <b>beginningBalance</b> + <b>contributionsBalance</b> - <b>distributionsAndLoansBalance</b> +/- <b>loansRepaymentsBalance</b> (depends on whether sum is +ve or -ve) +/- <b>otherBalance</b>(depends on whether sum is +ve or -ve) - <b>endingBalance</b>",
+            "format": "double"
+          },
+          "loansRepaymentsBalance": {
+            "type": "number",
+            "description": "The total loan repayment amount for the requested timeframe.<br> <br> Max Length: 15 digits with 2 decimal places<br> <br> Format: ###############.##",
+            "format": "double"
+          },
+          "netChange": {
+            "type": "number",
+            "description": "The difference between the <b>beginningBalance</b> and the <b>endingBalance</b> amounts.<br> <br> Max Length: 15 digits with 2 decimal places<br> <br> Format: ###############.##",
+            "format": "double"
+          },
+          "otherBalance": {
+            "type": "number",
+            "description": "The total other amount for the requested timeframe.<br> <br> Max Length: 15 digits with 2 decimal places<br> <br> Format: ###############.##",
+            "format": "double"
+          },
+          "startTradeDate": {
+            "type": "string",
+            "description": "The beginning search trade date of a requested date range.<br> <br> Format: MM/DD/YYYY"
+          }
+        }
+      },
+      "PartProfileResponseDTO": {
+        "type": "object",
+        "properties": {
+          "annulSalaryAmount": {
+            "type": "string",
+            "description": "Annual salary reported by the sponsoring company for an employee.<br> <br> Max Length: 13 digits with 2 decimal places"
+          },
+          "asOfDate": {
+            "type": "string",
+            "description": "The recordkeeping processing date.<br> <br> Max Length: 10 <br> <br> Format:  MM/DD/YYYY"
+          },
+          "branchId": {
+            "type": "string",
+            "description": "Unique ID for the Branch.<br> <br> Max Length: 9<br> <br> Format: #########"
+          },
+          "employeeHireDate": {
+            "type": "string",
+            "description": "Participant hire date. <br> <br> Max Length: 10 <br> <br> Format:  MM/DD/YYYY"
+          },
+          "enrollmentStatusCde": {
+            "type": "string",
+            "description": "Participant registration enrollment election status code.<br> <br> Max Length: 1<br> <br> Valid Values: <ul> <li> E - Enrolled</li> <li> D - Declined</li> <li> U - Undecided</li> <li> P - Pending Enrollment</li> <li> C - Deferral Change</li> <li> R - Cut Off</li> </ul> Notes : Empty String value is returned when participant status is Not Enrolled."
+          },
+          "fgRepNme": {
+            "type": "string",
+            "description": "The full name of the representative at the financial institution fund group.<br> <br> Max Length: 35"
+          },
+          "financialInstitutionId": {
+            "type": "string",
+            "description": "Unique ID for a Financial Institution.<br> <br> Max Length: 7<br> <br> Format: #######"
+          },
+          "genderCode": {
+            "type": "string",
+            "description": "The gender of the specified entity.<br> <br> Max Length: 1<br> <br> Valid Values: <ul> <li> F - Female</li> <li> M - Male</li> <li> U - Unknown</li> <li> Z - Not applicable</li> </ul>"
+          },
+          "govUnitMedNme": {
+            "type": "string",
+            "description": "The medium name for the Government Unit or Postal District.<br> <br> Max length: 16"
+          },
+          "inExclusionCategoryCode": {
+            "type": "string",
+            "description": "Indicates whether the participant is included in an excluded category or not.<br> <br> Max Length: 1<br> <br> Valid Values: <ul> <li> Y - Yes</li> <li> N - No</li> <li> Z - NA</li> "
+          },
+          "isInManagedAccount": {
+            "type": "boolean",
+            "description": "Indicates if the participant account is a managed account.<br> <br> Valid Values: <ul> <li> True</li> <li> False</li> </ul>"
+          },
+          "maritalStatus": {
+            "type": "string",
+            "description": "Indicates the marital status of the entity.<br> <br> Max Length: 1<br> <br> Valid Values: <ul> <li> M - Married</li> <li> S - Single</li> <li> D - Divorced</li> <li> W - Widowed</li> </ul>"
+          },
+          "modelId": {
+            "type": "string",
+            "description": "Investment Plan Asset Allocation Model Id within an investment plan.<br> <br> Max Length: 7<br> <br> Format: #######"
+          },
+          "myAdvisorEmail": {
+            "type": "string",
+            "description": "Advisor email address.<br> <br> Max length: 255"
+          },
+          "myAdvisorFax": {
+            "type": "string",
+            "description": "Advisor fax phone number.<br> <br> Max length: 15"
+          },
+          "myAdvisorName": {
+            "type": "string",
+            "description": "Advisor full name. <br> <br> Max length: 35"
+          },
+          "myAdvisorPhone": {
+            "type": "string",
+            "description": "Advisor office phone number.<br> <br> Max length: 15"
+          },
+          "myAdvisorRepAddress1": {
+            "type": "string",
+            "description": "First line of the Advisor address.<br> <br> Max length: 35"
+          },
+          "myAdvisorRepAddress2": {
+            "type": "string",
+            "description": "Second line of the Advisor address.<br> <br> Max length: 35"
+          },
+          "myAdvisorRepAddress3": {
+            "type": "string",
+            "description": "Third First line of the Advisor address.<br> <br> Max length: 35"
+          },
+          "myAdvisorRepAddress4": {
+            "type": "string",
+            "description": "Fourth line of the Advisor address.<br> <br> Max length: 35"
+          },
+          "myAdvisorRepCityName": {
+            "type": "string",
+            "description": "City for the Advisor address.<br> <br> Max length: 35"
+          },
+          "myAdvisorRepZipCode": {
+            "type": "string",
+            "description": "Zip Code for the Advisor address.<br> <br> Max length: 5 digits"
+          },
+          "myAdvisorRepZipCodeSFX": {
+            "type": "string",
+            "description": "ZIP Code delivery sequence for the Advisor address.<br> <br> Max length: 4 digits"
+          },
+          "myAdvisorStateText": {
+            "type": "string",
+            "description": "State for the Advisor address.<br> <br> Max length: 16"
+          },
+          "partBeneficiaryExist": {
+            "type": "string",
+            "description": "Indicates at least one Beneficiary Id for the Participant exists.<br> <br> Max Length: 1<br> <br> Valid Values: <ul> <li> Y - Yes</li> <li> N - No</li> </ul>"
+          },
+          "partBirthDay": {
+            "type": "string",
+            "description": "Participant birth date. <br> <br> Max Length: 10 <br> <br> Format:  MM/DD/YYYY"
+          },
+          "partFirstName": {
+            "type": "string",
+            "description": "The first name of the participant.<br> <br> Max Length: 35"
+          },
+          "partFullName": {
+            "type": "string",
+            "description": "The participant first name, middle name and last name combined and displayed as the full name of the participant.<br> <br> Max Length: 107"
+          },
+          "partLastName": {
+            "type": "string",
+            "description": "The last name of the participant.<br> <br> Max Length: 35"
+          },
+          "partMiddleName": {
+            "type": "string",
+            "description": "The middle name of the participant.<br> <br> Max Length: 35"
+          },
+          "partPsntEnrlWzdCde": {
+            "type": "string",
+            "description": "Indicates the participant was presented with the enrollment wizard.<br> <br> Max Length: 1<br> <br> Valid Values: <ul> <li> Y - Yes</li> <li> N - No</li> </ul>"
+          },
+          "partStatusCode": {
+            "type": "string",
+            "description": "A participant's status within the plan.<br> <br> Max Length: 1<br> <br> Valid Values: <ul> <li>  A - Active</li> <li>  B - Beneficiary</li> <li>  C - Census</li> <li>  D - Disabled</li> <li> E - Eligible but not contributing</li> <li> I - InActive</li> <li> N - Not Eligible</li> <li> Q - Qualified Domestic Relations Order (QDRO)</li> <li> R - Retired</li> <li> S - Suspended</li> <li> T - Terminated</li> <li> X - Deceased</li> <li> Y - Transferred Out</li> <li> P - Pseudo (placeholder) Participant</li> </ul>"
+          },
+          "participantReEnrollmentCode": {
+            "type": "string",
+            "description": "Indicates the participant is included in a re-enrollment event.<br> <br> Max Length: 1<br> <br> Valid Values: <ul> <li> Y - Yes</li> <li> N - No</li> "
+          },
+          "planCategoryExtId": {
+            "type": "string",
+            "description": "Uniquely identifies an Investment Plan Category for an Investment Plan.<br> <br> Max length: 20 digits"
+          },
+          "representativeId": {
+            "type": "string",
+            "description": "Unique ID for the representative.<br> <br> Max Length: 9<br> <br> Format: #########"
+          },
+          "retirementAge": {
+            "type": "string",
+            "description": "Investment Plan normal retirement age.<br> <br> Max Length: 7 digits<br> <br> Notes: This count represents the number of calendar years required along with the investment plan normal retirement fractional age count to meet the qualification of the normal retirement age for participants in this plan."
+          },
+          "retirementGoalsEstablished": {
+            "type": "string",
+            "description": "Indicates if retirement goals are established for the participant.<br> <br> Max Length: 1<br> <br> Valid Values: <ul> <li> Y - Yes</li> <li> N - No</li> </ul>"
+          },
+          "retirementInflationCd": {
+            "type": "string",
+            "description": "Indicates the inflation rate is set for the participant.<br> <br> Max Length: 1<br> <br> Valid Values: <ul> <li> Y - Yes</li> <li> N - No</li> <li> \" \" - Spaces</li> </ul>"
+          },
+          "shareHolderAge": {
+            "type": "string",
+            "description": "Participant age in years. <br> <br> Max Length: 3 digits"
+          },
+          "ssn": {
+            "type": "string",
+            "description": "The tax ID number for the participant.<br> <br> Max Length: 9 digits"
+          },
+          "statDelLocationId": {
+            "type": "string",
+            "description": "Investment Plan Location ID.<br> <br> Max length: 9 digits"
+          },
+          "stopMail": {
+            "type": "string",
+            "description": "Indicates a participant has a stop mail restriction.<br> <br> Max Length: 1<br> <br> Valid Values: <ul> <li> 0 - Indicates stop mail is set to No</li> <li> 1 - Indicates stop mail is set to Yes</li> </ul>"
+          },
+          "superSheetDate": {
+            "type": "string",
+            "description": "Identifies the calendar date for which the system nightly cycle is considered to be currently active.<br> <br> Max Length: 10 <br> <br> Format:  MM/DD/YYYY"
+          },
+          "qdiaReallocationOptedOutStatus": {
+            "type": "string",
+            "description": "Identifies a participant status of opted out for Automated QDIA reallocation event.<br> <br> Max Length: 1 <br> <br> Valid Values:<ul> <li> Y - Indicates participant is opted out of Automated QDIA reallocation event</li> <li> N - Indicates participant is not opted out of Automated QDIA reallocation event</li> <li> Z - Indicates participant is not in Automated QDIA reallocation event</li> </ul>"
+          },
+          "qdiaReallocationEventRunDate": {
+            "type": "string",
+            "description": "Identifies the calendar date on which the Automated QDIA reallocation event will run.<br> <br> Max Length: 10 <br> <br> Format:  MM/DD/YYYY"
+          }
+        }
+      },
+      "RetrieveContactInformationResponseDTO": {
+        "type": "object",
+        "properties": {
+          "additionalFinancialServiceCompensationScheduleTypeCode": {
+            "type": "string",
+            "description": "Type of compensation schedule a plan uses to compensate the registered investment advisor (RIA) providing the managed account service."
+          },
+          "affiliatePayrollCycleCode": {
+            "type": "string",
+            "description": "Determines the type of payroll cycle used.<br><br> Valid Values: <ul> <li> Bi-Weekly</li> <li> Monthly</li> <li> Semi-Monthly</li> <li> Other</li> <li> Weekly</li> </ul>"
+          },
+          "affiliatePayrollMediaType": {
+            "type": "string",
+            "description": "Media type for the payroll information.<br><br> Valid Values: <ul> <li> Disk</li> <li> Hardcopy</li> <li> Electronic Transmission</li> <li> Other</li> <li> Tape</li> </ul>"
+          },
+          "aliasFundGroupRepresentativeAlias": {
+            "type": "string",
+            "description": "Full name alias of the representative. <br><br> Max Length: 35 <br><br> Notes: <ul> <li> Name is formatted in the format specified at the financial institution level for the primary institution for this representative</li> <li> May or may not be a combination for the Alias Rep First, Last and Middle Name.</li></ul> "
+          },
+          "assignmentParticipantSelectionEligibleCode": {
+            "type": "string",
+            "description": "Identifies the group of representatives for the plan that are eligible for participant selection and/or assignment. <br><br> Notes: Value of &quot;No&quot; identifies the representative assignment is not allowed to be assigned to a new participant registration, while it does remain in effect for the original registration assigned. <br><br> Valid Values: <ul> <li> Yes</li> <li> No</li> <li> Not Applicable</li> </ul>"
+          },
+          "comboFileProcCode": {
+            "type": "string",
+            "description": "Identifies the tax payer participates in combined state/federal file (TAPE) processing.<br><br> Valid Values: <ul> <li> Yes</li> <li> No</li> </ul>"
+          },
+          "companyTypeCode": {
+            "type": "string",
+            "description": "Identifies the company type.<br><br> Valid Values: <ul> <li> Corporation</li> <li> Other</li> <li> Partnership</li> <li> Sub-Chapter Corporation</li> <li> Tax Exempt</li> <li> Sole Proprietor</li> </ul>"
+          },
+          "contact1InternetAddressText": {
+            "type": "string",
+            "description": "Text that represents the internet address URL or email for the contact identified as &quot;contact 1&quot;. <br><br> Max Length: 255"
+          },
+          "contact2InternetAddressText": {
+            "type": "string",
+            "description": "Text that represents the internet address URL or email for the contact identified as &quot;contact 2&quot;. <br><br> Max Length: 255"
+          },
+          "contact3InternetAddressText": {
+            "type": "string",
+            "description": "Text that represents the internet address URL or email for the contact identified as &quot;contact 3&quot;. <br><br> Max Length: 255"
+          },
+          "contactAddressLine1": {
+            "type": "string",
+            "description": "First line of the contact entity address. <br><br> Max Length: 35"
+          },
+          "contactAddressLine2": {
+            "type": "string",
+            "description": "Second line of the contact entity address. <br><br> Max Length: 35"
+          },
+          "contactAddressLine3": {
+            "type": "string",
+            "description": "Third line of the contact entity address. <br><br> Max Length: 35"
+          },
+          "contactAddressLine4": {
+            "type": "string",
+            "description": "Fourth line of the contact entity address. <br><br> Max Length: 35"
+          },
+          "contactCityName": {
+            "type": "string",
+            "description": "City name of the contact entity address.Max. Length: 35"
+          },
+          "contactForeignZipCode": {
+            "type": "string",
+            "description": "Zip code of the contact entity foreign address. <br><br> Format: ###########"
+          },
+          "contactName": {
+            "type": "string",
+            "description": "Name of the contact."
+          },
+          "contactStateCountryCode": {
+            "type": "integer",
+            "description": "State country code of the contact entity address.Max. Length: 9",
+            "format": "int32"
+          },
+          "contactTypeCode": {
+            "type": "string",
+            "description": "Identifies the contact type.<br><br> Valid Values: <ul> <li> Sponsor Company</li> <li> Plan Administrator</li> <li> Account Administrator</li> <li> Primary Representative</li> <li> Add Representative</li> <li> Custodian</li> <li> Trustee</li> <li> Third Party Administrator</li> <li> Payer Tax Reporting</li> <li> Affiliate Company</li> <li> Location</li> <li> Additional Service</li> <li> Representative Group</li> </ul>"
+          },
+          "contactZipCode": {
+            "type": "string",
+            "description": "Zip code of the contact entity address. <br><br> Format: #########"
+          },
+          "contactZipSuffixCode": {
+            "type": "integer",
+            "description": "Suffix of the contact entity address zip code. <br><br> Format: ####",
+            "format": "int32"
+          },
+          "dailyStatementCopyCount": {
+            "type": "integer",
+            "description": "Indicates the number of daily statements to be printed for the contact type. <br><br> Format: #########",
+            "format": "int32"
+          },
+          "employeeProfileTrackingCode": {
+            "type": "string",
+            "description": "Indicates the plan sponsor tracks employee profiles<br><br> Valid Values: <ul> <li> Yes</li> <li> No</li> </ul>"
+          },
+          "externalContactID": {
+            "type": "string",
+            "description": "Tax identification number for the contact entity. <br><br> Max Length: 9"
+          },
+          "financialBranchRepID": {
+            "type": "string",
+            "description": "Identifier assigned by the financial institution branch for the brand representative. <br><br> Max Length: 9"
+          },
+          "financialFundGroupRepEmailID": {
+            "type": "string",
+            "description": "Fund group representative email address. <br><br> Max Length: 255"
+          },
+          "financialInstitutionBranchID": {
+            "type": "string",
+            "description": "Unique ID for the financial institution branch. <br><br> Max Length: 9"
+          },
+          "financialInstitutionBranchRepresentativeExternalID": {
+            "type": "string",
+            "description": "External identifier by the client to identify this financial institution branch representative. <br><br> Max Length: 20"
+          },
+          "financialInstitutionBranchRepresentativeSecondaryExternalID": {
+            "type": "string",
+            "description": "Secondary external identifier by the client to identify this financial institution branch representative. <br><br> Max Length: 20"
+          },
+          "financialInstitutionID": {
+            "type": "integer",
+            "description": "Unique ID for the financial institution. <br><br> Format: 9999999",
+            "format": "int32"
+          },
+          "financialIntermediaryServiceID": {
+            "type": "string",
+            "description": "Identifies the additional financial service.<br><br> Valid Values: <ul> <li> Broker</li> <li> Affiliated Dealer</li> <li> TPA</li> <li> Trust</li> <li> Recordkeeper</li> <li> Plan Advisor Service</li> <li> Consultant</li> <li> Bank Trust</li> <li> Accounting</li> <li> Actuarial</li> <li> Contract Adm/Mgmt</li> <li> Insurance</li> <li> Investment Adv</li> <li> Investment Mgmt</li> <li> Legal</li> <li> Appraisal</li> <li> Doc Processing</li> <li> Marketing</li> <li> Earnings Dtr Dsb</li> <li> Ivt Lineup</li> <li> SDBA Svc</li> <li> 5500 Other</li> <li> Retire Consultant</li> <li> Defined Benefit</li> <li> Rollover Svc</li> <li> Financial Advice</li> </ul>"
+          },
+          "finincialInstitutionBranchRepServiceGroupRoleID": {
+            "type": "string",
+            "description": "Identifies the representative service group role.<br><br> Valid Values: <ul> <li> Overriding</li> <li> Writing</li> </ul>"
+          },
+          "formMicroCode": {
+            "type": "string",
+            "description": "Indicates the tax payer has requested the tax forms to be copied to microfiche.<br><br> Valid Values: <ul> <li> Yes</li> <li> No</li> </ul>"
+          },
+          "fromInternetAddressText": {
+            "type": "string",
+            "description": "Text that represents the internet address URL or email for the contact identified as &quot;sent from&quot;. <br><br> Max Length: 255"
+          },
+          "fundGroupRepresentativeExternalID": {
+            "type": "string",
+            "description": "Value assigned externally that identifies the fund group representative on external systems. <br><br> Max Length: 20"
+          },
+          "icuDefaultNsccMemberNumberID": {
+            "type": "string",
+            "description": "Identifies the NSCC member number default setup by the client to be propagated to any new trustee entered after the default is set for the investment company. <br><br> Max Length: 4"
+          },
+          "investmentPlanAdditionalFinancialServiceEffDate": {
+            "type": "string",
+            "description": "Financial service effective date. <br><br> Format: YYYY-MM-DD"
+          },
+          "investmentPlanAdditionalFinancialServiceExprDate": {
+            "type": "string",
+            "description": "Financial service expiration date. <br><br> Format: YYYY-MM-DD"
+          },
+          "jointMarketingRepresentativeCode": {
+            "type": "string",
+            "description": "Indicates the representative is part of a joint marketing agreement with other representatives. <br><br> Notes: A joint marketing agreement is an agreement between multiple representatives that split the commissions in predetermined percentages. <br><br> Valid Values: <ul> <li> Yes</li> <li> No</li> </ul>"
+          },
+          "nsccFirmNumber": {
+            "type": "string",
+            "description": "Ineditier assigned by the NSCC. <br><br> Note: <ul> <li> Needed when any of the administrator's plans that have an external mutual fund vehicle that use the NSCC for transaction processing.</li> <li>In this role, the administrator is acting as the third party administrator for those transactions. </li> </ul>"
+          },
+          "planFinancialServiceMasterRepresentativeExternalID": {
+            "type": "string",
+            "description": "Identifies the service provider for the master representative assigned to the plan using a financial intermediary service. <br><br> Max Length: 20"
+          },
+          "planFinancialServiceMasterRepresentativeName": {
+            "type": "string",
+            "description": "Name of the master representative associated to a plan for a financial intermediary service. <br><br> Max Length: 50"
+          },
+          "planSponsorElectronicDistributionElectionCode": {
+            "type": "string",
+            "description": "Identifies if the plan elects to send email notifications to the plan sponsor for eDistribution requests.<br><br> Valid Values: <ul> <li> Yes</li> <li> No</li> </ul>"
+          },
+          "postalCode": {
+            "type": "string",
+            "description": "State/country abbreviation. <br><br> Max Length: 2"
+          },
+          "primaryContactFaxNumber": {
+            "type": "integer",
+            "description": "Fax number for the primary contact. <br><br> Format: ###############",
+            "format": "int32"
+          },
+          "primaryContactFaxTypeCode": {
+            "type": "string",
+            "description": "Indicates the type of fax number for the primary contact.<br><br> Valid Values: <ul> <li> Foreign</li> <li> Domestic</li> </ul>"
+          },
+          "primaryContactFirstName": {
+            "type": "string",
+            "description": "Primary contact first name. <br><br> Max Length: 35"
+          },
+          "primaryContactLastName": {
+            "type": "string",
+            "description": "Primary contact last name. <br><br> Max Length: 35"
+          },
+          "primaryContactMiddleName": {
+            "type": "string",
+            "description": "Primary contact middle name. <br><br> Max Length: 35"
+          },
+          "primaryContactPhoneNumber": {
+            "type": "integer",
+            "description": "Phone number for the primary contact. <br><br> Format: ###############",
+            "format": "int32"
+          },
+          "primaryContactPhoneTypeCode": {
+            "type": "string",
+            "description": "Indicates the type of phone number for the primary contact.<br><br> Valid Values: <ul> <li> Foreign</li> <li> Domestic</li> </ul>"
+          },
+          "primaryPlanSponsorWebIDCount": {
+            "type": "integer",
+            "description": "Count of the number of plan sponsor web ID's the primary contact on the plan has assigned to them. <br><br> Max Length: 3",
+            "format": "int32"
+          },
+          "repServiceGroupCommissionSplitRate": {
+            "type": "number",
+            "description": "Rate used to split commissions for the representative in this service group role. <br><br> Format: #####.##########",
+            "format": "double"
+          },
+          "replyToInternetAddressText": {
+            "type": "string",
+            "description": "Text that represents the internet address URL or email for the contact identified as &quot;reply to&quot;. <br><br> Max Length: 255"
+          },
+          "representativeExternalID": {
+            "type": "string",
+            "description": "Assigned by the investment company to identify their financial institution fund group representatives. <br><br> Max Length: 5"
+          },
+          "representativeExternalReferenceID1": {
+            "type": "string",
+            "description": "Assigned by the investment company for its internal use in combination with the representativeExternalReferenceID2. <br><br> Max Length: 10"
+          },
+          "representativeExternalReferenceID2": {
+            "type": "string",
+            "description": "Assigned by the investment company for its internal use in combination with the representativeExternalReferenceID1. <br><br> Max Length: 10"
+          },
+          "representativeGICCommissionRate": {
+            "type": "number",
+            "description": "Indicates the commission rate the representative receives on investment vehicles that are Guaranteed Investment Contract (GIC). <br><br> Notes: <ul> <li> Rate will be 100% if there is only one representative representing the plan in GICs.</li> <li> Multiple representatives in a joint marketing agreement can have a combined total of not more than 100% for a given plan.</li></ul> <br><br> Format: #####.##########",
+            "format": "double"
+          },
+          "representativeGroupElectronicEnrollmentCode": {
+            "type": "string",
+            "description": "Identifies the representative group that is used for electronic enrollment.<br><br> Valid Values: <ul> <li> Yes</li> <li> No</li> </ul>"
+          },
+          "representativeInsuranceCommissionRate": {
+            "type": "number",
+            "description": "Indicates the commission rate the representative receives on investment vehicles that are insurance. <br><br> Notes: <ul> <li> Rate will be 100% if there is only one representative representing the plan in insurance.</li> <li> Multiple representatives in a joint marketing agreement can have a combined total of not more than 100% for a given plan.</li></ul> <br><br> Format: #####.##########",
+            "format": "double"
+          },
+          "representativeMutualFundCommissionRate": {
+            "type": "number",
+            "description": "Commission rate the representative receives on vehicles that are internal DST mutual funds. <br><br> Notes: <ul> <li> Rate will be 100% if there is only one representative representing the plan in DST mutual funds.</li> <li> Multiple representatives in a joint marketing agreement can have a combined total of not more than 100% for a given plan.</li></ul> <br><br> Format: #####.##########",
+            "format": "double"
+          },
+          "representativeName": {
+            "type": "string",
+            "description": "Full name of the fund group representative. <br><br> Max Length: 35 <br><br> Notes: <ul> <li> Name is formatted as specified at the financial institution indicated as primary to this representative.</li> <li> Field may contain the value &quot;AUTO ADD&quot;, the value signified the transaction was received with a representative name that did not pass the format edit. This is an exception and the name format exception reported. It is possible the value may never change as there are situations where the Broker/Dealer may want to keep the true name of the Representative hidden from FID.</li></ul> "
+          },
+          "representativeOtherCommissionRate": {
+            "type": "number",
+            "description": "Indicates the commission rate the representative receives on investment vehicles that are not otherwise explicitly defined. <br><br> Notes: <ul> <li> Rate will be 100% if there is only one representative representing the plan in the particular vehicle.</li> <li> Multiple representatives in a joint marketing agreement can have a combined total of not more than 100% for a given plan.</li></ul> <br><br> Format: #####.##########",
+            "format": "double"
+          },
+          "representativeOverrideAllowedCode": {
+            "type": "string",
+            "description": "Identifies if that participant can override the plan's primary representative.<br><br> Valid Values: <ul> <li> No Override</li> <li> Participant Override</li> </ul>"
+          },
+          "representativePlanEffectiveStartDate": {
+            "type": "string",
+            "description": "Date the representative became eligible to receive commissions for this plan. <br><br> Format: YYYY-MM-DD"
+          },
+          "requireSignatures": {
+            "type": "integer",
+            "description": "Identifies the number of signatures required for validating legal documents. <br><br> Format: #######",
+            "format": "int32"
+          },
+          "sameMutualFundAccountServiceAssignmentCode": {
+            "type": "string",
+            "description": "Indicates if the dealer assigned to the service is the same dealer assigned to the associated mutual fund accounts for the same service.<br><br> Valid Values: <ul> <li> Yes</li> <li> No</li> </ul>"
+          },
+          "secondAliasFundGroupRepresentativeAlias": {
+            "type": "string",
+            "description": "Name of the secondary alias if more than one alias exists. <br><br> Max Length: 35"
+          },
+          "secondaryPlanSponsorWebIDCount": {
+            "type": "string",
+            "description": "Count of the number of plan sponsor web ID's the secondary contact on the plan has assigned to them. <br><br> Max Length: 3"
+          },
+          "stateName": {
+            "type": "string",
+            "description": "State or foreign country name of the contact entities address. <br><br> Max Length: 16"
+          },
+          "statementCopyCount": {
+            "type": "integer",
+            "description": "Number of copies of each periodic participant statement that is sent to this location. <br><br> Format: #######",
+            "format": "int32"
+          },
+          "totalAffiliateCompanyCount": {
+            "type": "integer",
+            "description": "Total number of affiliates associated with a sponsoring company. <br><br> Format: #########",
+            "format": "int32"
+          }
+        }
+      },
+      "RetrieveContactInformationListResponseDTO": {
+        "type": "object",
+        "properties": {
+          "assignIndividualRepresentativeID": {
+            "type": "string",
+            "description": "Indicates the menu item for adding Individual Representative is enabled or disabled. <br><br> Note: If the plan is eligible to assigne representative group, then the menu item for adding individual representative will be disabled.<br><br> Valid Values: <ul> <li> Enabled</li> <li> Disabled</li> </ul>"
+          },
+          "contactList": {
+            "type": "array",
+            "description": "List of contacts for the plan.",
+            "items": {
+              "$ref": "#/components/schemas/RetrieveContactInformationResponseDTO"
+            }
+          },
+          "employeeProfileTrackingCode": {
+            "type": "string",
+            "description": "Indicates if the plan sponsor tracks employee profiles<br><br> Valid Values: <ul> <li> Yes</li> <li> No</li> </ul>"
+          },
+          "icuDefaultNsccMemberNumberID": {
+            "type": "string",
+            "description": "Identifies the NSCC member number default setup by the client to be propagated to any new trustee entered after the default is set for the investment company. <br><br> Max Length: 4"
+          },
+          "icuID": {
+            "type": "integer",
+            "description": "Unique ID for the Investment Company Unit (ICU). <br><br> Max Length: 5 <br><br> Format: #####",
+            "format": "int32"
+          },
+          "planID": {
+            "type": "integer",
+            "description": "Unique ID for the Plan. <br><br> Max Length: 7 <br><br> Format: #######",
+            "format": "int32"
+          },
+          "planSponsorElectronicDistributionElectionCode": {
+            "type": "string",
+            "description": "Idenfies if the plan elects to send email notifications to the plan sponsor for eDistribution requests.<br><br> Valid Values: <ul> <li> Yes</li> <li> No</li> </ul>"
+          },
+          "tpaElectronicDistributionElectionCode": {
+            "type": "string",
+            "description": "Idenfies if the plan elects to send email notifications to the third party administrator for eDistribution requests.<br><br> Valid Values: <ul> <li> Yes</li> <li> No</li> </ul>"
+          },
+          "useMediaCopyCountCode": {
+            "type": "string",
+            "description": "Indicates the fund sponsor will use the media copy count in UFID instead ot he plan periodic statemetn copy count for TRAC modular statements.<br><br> Valid Values: <ul> <li> Yes</li> <li> No</li> </ul>"
+          }
+        }
+      },
+     },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "name": "apikey",
+        "in": "header"
+      },
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://uat-apis.ssctech.cloud/participant-self-service/oauth2/code",
+            "tokenUrl": "https://uat-apis.ssctech.cloud/participant-self-service/oauth2/token",
+            "scopes": {}
+          }
+        }
+      }
+    }
+  }
+}
